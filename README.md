@@ -4,5 +4,6 @@
 
 Graphical sine-wave manipulator.
 
-![Screenshot](./examples/wave.png)
+![colours.png](./examples/colours.png)
+![wave.png](./examples/wave.png)
 
