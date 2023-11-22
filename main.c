@@ -15,17 +15,25 @@ int main(void) {
 	const char* title = "siner";
 	const int fps = 40;	
 	
+
 	/* Wave colours */
 	Color colours[] = {
 		RAYWHITE, WHITE, BLACK /*rainbow*/, RED, GRAY, BLUE, LIGHTGRAY, YELLOW, GREEN, PINK, ORANGE,
 			PURPLE };
 	size_t colour_count = sizeof(colours) / sizeof(colours[0]);
 	
+	/* Math functions */
+	double (*maths[])(double) = { sin, cos, tan, asin, acos, atan, log };
+	size_t math_count = sizeof(maths) / sizeof(maths[0]);
+
+
 	struct {
 		double colour_code;
+		double math_code;
+
 		double amplitude, frequency;
 		double thickness, shift;
-	} wave = { 0.0, 5.0, 0.2, 5.0, 0.0 };
+	} wave = { 0.0, 0.0, 5.0, 0.2, 5.0, 0.0 };
 	
 	double mod_mode = 0;
 	struct {
@@ -46,8 +54,10 @@ int main(void) {
 			1.0, &(wave.thickness) },
 		{ 330, 20, 60, 20, "[   sft   ]",
 			1.0, &(wave.shift) },
-		{ 170, 60, 60, 20, "[   col   ]",
-			1.0, &(wave.colour_code) }
+		{ 130, 60, 60, 20, "[   col   ]",
+			1.0, &(wave.colour_code) },
+		{ 210, 60, 60, 20, "[   mth   ]",
+			1.0, &(wave.math_code) }
 	};
 	size_t button_count = sizeof(buttons) / sizeof(buttons[0]);
 
@@ -79,7 +89,18 @@ int main(void) {
 		/* Draw the buttons + wave */
 		BeginDrawing();
 		ClearBackground(BLACK);
+		
+		/* Draw configuration */
+		char confs[100];
+		sprintf(confs, "mode: %c   math: %d", mod_mode == 0 ? '+' : '-',
+				(int)wave.math_code); 
+		DrawText(confs, 10, 368, 8, RAYWHITE);
+		sprintf(confs, "amplitude: %d   frequency: %d   thickness: %d   shift: %d",
+				(int)(wave.amplitude), (int)(wave.frequency),
+				(int)(wave.thickness), (int)(wave.shift));
+		DrawText(confs, 10, 380, 8, RAYWHITE);
 
+		/* Draw buttons */
 		for (int b = 0; b < button_count; b++) {
 			DrawRectangle(buttons[b].x, buttons[b].y, buttons[b].width,
 				buttons[b].height, BUTTON_COLOUR);
@@ -90,7 +111,7 @@ int main(void) {
 		/* Draw pixels individually */
 		for (int j = 0; j < x; j++) {
 			for (int w = -ceil(wave.thickness / 2); w < ceil(wave.thickness / 2); w++) {
-				int y = floor(wave.amplitude * sin(wave.frequency * (j+w) + wave.shift));
+				int y = floor(wave.amplitude * maths[(int)(wave.math_code) % math_count](wave.frequency * (j+w) + wave.shift));
 				Color c = colours[(int)(wave.colour_code) % colour_count];
 				if (color_comp(c, BLACK)) {
 					
