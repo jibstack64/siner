@@ -5,6 +5,10 @@
 
 #define BUTTON_COLOUR RAYWHITE
 
+int color_comp(Color a, Color b) {
+	return a.a == b.a && a.b == b.b && a.r == b.r && a.g == b.g;
+}
+
 int main(void) {	
 	
 	const int sides = 400;
@@ -13,7 +17,7 @@ int main(void) {
 	
 	/* Wave colours */
 	Color colours[] = {
-		RAYWHITE, RED, GRAY, BLUE, LIGHTGRAY, YELLOW, GREEN, PINK, ORANGE,
+		RAYWHITE, WHITE, BLACK /*rainbow*/, RED, GRAY, BLUE, LIGHTGRAY, YELLOW, GREEN, PINK, ORANGE,
 			PURPLE };
 	size_t colour_count = sizeof(colours) / sizeof(colours[0]);
 	
@@ -87,7 +91,28 @@ int main(void) {
 		for (int j = 0; j < x; j++) {
 			for (int w = -ceil(wave.thickness / 2); w < ceil(wave.thickness / 2); w++) {
 				int y = floor(wave.amplitude * sin(wave.frequency * (j+w) + wave.shift));
-				DrawPixel(j, y + (sides / 2), colours[(int)(wave.colour_code) % colour_count]);
+				Color c = colours[(int)(wave.colour_code) % colour_count];
+				if (color_comp(c, BLACK)) {
+					
+					int	
+						r = 255 * j / x,
+						g = 255 * j / x, 
+						b = 255 * j / x,
+						a = 255;
+					c = (Color) { r, g, b, a };
+				
+				} else if (color_comp(c, WHITE)) {
+					
+					int
+						r = 255 * j / x,
+						g = 255 * x / sides,
+						b = 255 * (j + x) / sides*2,
+						a = 255;
+					c = (Color) { r, g, b, a };
+
+				}
+
+				DrawPixel(j, y + (sides / 2), c);
 			}
 		}
 
