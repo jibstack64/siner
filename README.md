@@ -4,6 +4,7 @@
 
 Graphical wave manipulator.
 
+![graphics.png](./examples/graphics.png)
 ![colours.png](./examples/colours.png)
 ![wave.png](./examples/wave.png)
 
